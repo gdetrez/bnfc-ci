@@ -217,4 +217,31 @@ job {
         dist/BNFC-\${BNFC_VERSION}-mac.pkg
     """
   }
+  publisher {
+    archiveArtifacts 'BNFC-$BNFC_VERSION-mac.pkg'
+  }
+}
+
+job {
+  name "$dir/bdist-linux64"
+  using "$dir/_base-job"
+  environmentVariables(DESTDIR: "BNFC-\$BNFC_VERSION-linux64")
+  wrappers { preBuildCleanup {} }
+  steps {
+    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
+      buildNumber('$SDIST_BUILD_NUMBER')
+    }
+    shell """
+      tar xf BNFC-\${BNFC_VERSION}.tar.gz --strip-components=1
+      cabal sandbox init
+      cabal sandbox install --only-dependencies
+      cabal exec configure --prefix=/
+      cabal exec build
+      cabal exec copy --destdir=\${DESTDIR}
+    """
+    shell "tar -cvz \${DESTDIR} \${DESTDIR}.tar.gz"
+  }
+  publisher {
+    archiveArtifacts '\${DESTDIR}.tar.gz'
+  }
 }
