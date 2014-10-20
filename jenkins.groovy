@@ -45,6 +45,7 @@ job(type: Multijob) {
     }
     phase() {
       phaseName 'Binaries'
+      job("$dir/bdist-mac")
     }
   }
 }
