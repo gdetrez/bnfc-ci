@@ -200,9 +200,8 @@ job {
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
     }
+    shell 'tar xf BNFC-${BNFC_VERSION}.tar.gz --strip-components=1'
     shell """
-      tar xf BNFC-\${BNFC_VERSION}.tar.gz
-      cd BNFC-\${BNFC_VERSION}
       runhaskell Setup.lhs configure --prefix=/usr
       runhaskell Setup.lhs build
       runhaskell Setup.lhs copy --destdir=\$(pwd)/dist/install
@@ -226,15 +225,15 @@ job {
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
     }
+    shell "tar xf BNFC-\${BNFC_VERSION}.tar.gz --strip-components=1"
     shell """
-      tar xf BNFC-\${BNFC_VERSION}.tar.gz --strip-components=1
       cabal sandbox init
       cabal sandbox install --only-dependencies
-      cabal exec configure --prefix=/
-      cabal exec build
-      cabal exec copy --destdir=\${DESTDIR}
+      cabal configure --prefix=/
+      cabal build
+      cabal copy --destdir=\${DESTDIR}
     """
-    shell "tar -cvz \${DESTDIR} \${DESTDIR}.tar.gz"
+    shell 'tar -cvz ${DESTDIR} ${DESTDIR}.tar.gz'
   }
   publisher {
     archiveArtifacts '\${DESTDIR}.tar.gz'
