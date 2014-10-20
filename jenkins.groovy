@@ -145,9 +145,10 @@ bdistMacJob = job {
     }
     shell 'tar xf BNFC-${BNFC_VERSION}.tar.gz --strip-components=1'
     shell """
-      runhaskell Setup.lhs configure --prefix=/usr
-      runhaskell Setup.lhs build
-      runhaskell Setup.lhs copy --destdir=\$(pwd)/dist/install
+      cabal sandbox init
+      cabal configure  --prefix=/usr
+      cabal build
+      cabal copy --destdir=\$(pwd)/dist/install
       pkgbuild --identifier com.digitalgrammars.bnfc.pkg \
         --version \${BNFC_VERSION} \
         --root \$(pwd)/dist/install/usr/bin \
@@ -178,7 +179,9 @@ bdistLinux64Job = job {
       cabal ${OPTS} install --only-dependencies
       cabal ${OPTS} configure --prefix=/
       cabal ${OPTS} build
-      cabal copy --destdir=${DESTDIR}
+      cabal copy --destdir=dist/install
+      cp dist/install/bin/bnfc ${DESTDIR}
+      cp LICENSE ${DESTDIR}
     '''
     shell 'tar -cvz ${DESTDIR} > ${DESTDIR}.tar.gz'
   }
@@ -210,7 +213,9 @@ bdistLinux32Job = job {
       cabal ${OPTS} install --only-dependencies
       cabal ${OPTS} configure --prefix=/
       cabal ${OPTS} build
-      cabal copy --destdir=${DESTDIR}
+      cabal copy --destdir=dist/install
+      cp dist/install/bin/bnfc ${DESTDIR}
+      cp LICENSE ${DESTDIR}
     '''
     shell 'tar -cvz ${DESTDIR} > ${DESTDIR}.tar.gz'
   }
