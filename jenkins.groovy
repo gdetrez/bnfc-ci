@@ -12,6 +12,7 @@ job(type: Multijob) {
     }
   }
   steps {
+    shell 'sed -ne "s/^version: *\\([0-9.]*\\).*/BNFC_VERSION=\\1/p" source/BNFC.cabal > version.properties'
     phase() {
       phaseName 'Commit'
       job("abc/commit-build") { gitRevision() }
