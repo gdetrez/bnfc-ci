@@ -111,7 +111,9 @@ job {
   }
   wrappers { preBuildCleanup {} }
   steps {
-    copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
+    copyArtifacts("$dir/sdist", "", "source/", flattenFiles=true) {
+      latestSuccessful()
+    }
     shell """
       cd testing
       export CLASSPATH=.:\$(pwd)/data/javatools.jar
