@@ -268,6 +268,10 @@ job(type: Multijob) {
         fileParam('version.properties')
         prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
       }
+      job(bdistLinux32Job.name) {
+        fileParam('version.properties')
+        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+      }
       job(bdistLinux64Job.name) {
         fileParam('version.properties')
         prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
@@ -278,6 +282,9 @@ job(type: Multijob) {
     }
     copyArtifacts(bdistMacJob.name,"","_artifacts", flatterFiles = true) {
       buildNumber('$BDIST_MAC_BUILD_NUMBER')
+    }
+    copyArtifacts(bdistLinux32Job.name,"","_artifacts", flatterFiles = true) {
+      buildNumber('$BDIST_LINUX32_BUILD_NUMBER')
     }
     copyArtifacts(bdistLinux64Job.name,"","_artifacts", flatterFiles = true) {
       buildNumber('$BDIST_LINUX64_BUILD_NUMBER')
