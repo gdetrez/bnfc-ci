@@ -185,9 +185,8 @@ bdistLinux64Job = job {
 bdistLinux32Job = job {
   name "$dir/bdist-linux32"
   using "$dir/_base-job"
-  environmentVariables(DESTDIR: "BNFC-\$BNFC_VERSION-linux32")
-  environmentVariables(CABALOPTS: "")
   steps {
+    environmentVariables(DESTDIR: "BNFC-\$BNFC_VERSION-linux32")
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
     }
