@@ -53,17 +53,11 @@ job(type: Multijob) {
 
 def baseJob = job {
   name "_base-job"
-  parameters {
-    stringParam("BNFC_VERSION")
-  }
   environmentVariables(PATH:"\$HOME/.cabal/bin:\$PATH")
 }
 
-job {
+baseJob.with {
   name "$dir/sdist"
-  parameters {
-    stringParam("BNFC_VERSION")
-  }
   scm {
     git {
       remote {
@@ -79,7 +73,7 @@ job {
   }
 }
 
-job {
+baseJob.with {
   name "$dir/commit-build"
   wrappers { preBuildCleanup {} }
   scm {
@@ -106,11 +100,8 @@ job {
   }
 }
 
-job {
+baseJob.with {
   name "$dir/acceptance-tests"
-  parameters {
-    stringParam("BNFC_VERSION")
-  }
   scm {
     git {
       remote {
@@ -147,7 +138,7 @@ job {
   }
 }
 
-job {
+baseJob.with {
   name "$dir/test-build-ghc-7.4.2"
   wrappers { preBuildCleanup {} }
   steps{
@@ -159,7 +150,7 @@ job {
   }
 }
 
-job {
+baseJob.with {
   name "$dir/test-build-ghc-7.8.3"
   wrappers { preBuildCleanup {} }
   steps{
@@ -171,11 +162,8 @@ job {
   }
 }
 
-job {
+baseJob.with {
   name "$dir/bdist-mac"
-  parameters {
-    stringParam("BNFC_VERSION")
-  }
   wrappers { preBuildCleanup {} }
   steps {
     copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
