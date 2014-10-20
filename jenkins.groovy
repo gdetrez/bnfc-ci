@@ -66,7 +66,7 @@ job {
     shell "cd source; cabal sdist"
   }
   publishers {
-    archiveArtifacts 'source/dist/BNFC-*.tar.gz'
+    archiveArtifacts 'source/dist/BNFC-${BNFC_VERSION}.tar.gz'
   }
 }
 
@@ -99,6 +99,9 @@ job {
 
 job {
   name "$dir/acceptance-tests"
+  parameters {
+    stringParam("BNFC_VERSION")
+  }
   scm {
     git {
       remote {
@@ -119,7 +122,7 @@ job {
         --constraint="HTF==0.11.*" \
         --constraint='aeson==0.7.0.4' \
         --constraint='haskell-src-exts==1.15.*'
-      cabal install BNFC-*.tar.gz
+      cabal install BNFC-\${BNFC_VERSION}.tar.gz
 
       # Compile test suite
       cabal configure
@@ -159,14 +162,15 @@ job {
 
 job {
   name "$dir/bdist-mac"
+  parameters {
+    stringParam("BNFC_VERSION")
+  }
   wrappers { preBuildCleanup {} }
   steps {
     copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
     shell """
-      SRCTGZ=\$(echo BNFC-*.tar.gz)
-      tar xf \${SRCTGZ}
-      cd \${SRCTGZ%.tar.gz}
-      BNFC_VERSION=\$(sed -n 's/^Version:[ \\t]*\\(.*\\)\$/\\1/p' BNFC.cabal)
+      tar xf BNFC-\${BNFC_VERSION}.tar.gz
+      cd BNFC-\${BNFC_VERSION}
       runhaskell Setup.lhs configure --prefix=/usr
       runhaskell Setup.lhs build
       runhaskell Setup.lhs copy --destdir=\$(pwd)/dist/install
