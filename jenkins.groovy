@@ -239,7 +239,7 @@ bdistMacJob = job {
       cabal install --only-dependencies
       cabal configure
       cabal build
-      RENAME dist\build\bnfc\bnfc.exe bnfc-%BNFC_VERSION%-win.exe
+      RENAME dist\\build\\bnfc\\bnfc.exe bnfc-%BNFC_VERSION%-win.exe
     '''
   }
   publishers {
