@@ -242,6 +242,9 @@ job(type: Multijob) {
       }
     }
   }
+  triggers {
+    githubPush()
+  }
   steps {
     // Those two first steps are parsing the numerical version from the cabal
     // file and store it in an environment variable
