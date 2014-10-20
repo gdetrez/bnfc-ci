@@ -223,11 +223,11 @@ job(type: Multijob) {
         fileParam('version.properties')
         prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
       }
-      job(testBuildGht742Job) {
+      job(testBuildGht742Job.name) {
         fileParam('version.properties')
         prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
       }
-      job(testBuildGht783Job) {
+      job(testBuildGht783Job.name) {
         fileParam('version.properties')
         prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
       }
