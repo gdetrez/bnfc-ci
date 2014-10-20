@@ -243,7 +243,7 @@ bdistWinJob = job {
     '''
   }
   publishers {
-    archiveArtifacts 'BNFC-${BNFC_VERSION}\\dist\\build\\bnfc\\bnfc-${BNFC_VERSION}.exe'
+    archiveArtifacts 'BNFC-${BNFC_VERSION}\\dist\\build\\bnfc\\bnfc-${BNFC_VERSION}-win.exe'
   }
 }
 /* ~~~ Main pipeline job ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
