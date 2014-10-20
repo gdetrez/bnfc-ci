@@ -143,7 +143,7 @@ job {
       SRCTGZ=\$(echo BNFC-*.tar.gz)
       tar xf \${SRCTGZ}
       cd \${SRCTGZ%.tar.gz}
-      BNFC_VERSION=\$(sed -n 's/^Version:[ \t]*\(.*\)\$/\1/p' BNFC.cabal)
+      BNFC_VERSION=\$(sed -n 's/^Version:[ \\t]*\\(.*\\)\$/\\1/p' BNFC.cabal)
       runhaskell Setup.lhs configure --prefix=/usr
       runhaskell Setup.lhs build
       runhaskell Setup.lhs copy --destdir=\$(pwd)/dist/install
