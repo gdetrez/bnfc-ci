@@ -7,14 +7,14 @@ job(type: Multijob) {
   steps {
     phase() {
       phaseName 'Commit'
-      job "abc/commit-build" { gitRevision() }
-      job "abc/sdist" { gitRevision() }
+      job("abc/commit-build") { gitRevision() }
+      job("abc/sdist") { gitRevision() }
     }
     phase() {
       phaseName 'QA'
-      job "abc/acceptance-tests" { gitRevision() }
-      job "abc/test-build-ghc-7.4.2"
-      job "abc/test-build-ghc-7.8.3"
+      job("abc/acceptance-tests") { gitRevision() }
+      job("abc/test-build-ghc-7.4.2")
+      job("abc/test-build-ghc-7.8.3")
     }
     phase() {
       phaseName 'Binaries'
