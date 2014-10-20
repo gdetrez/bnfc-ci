@@ -223,6 +223,29 @@ bdistLinux32Job = job {
     archiveArtifacts '${DESTDIR}.tar.gz'
   }
 }
+
+bdistMacJob = job {
+  name "$dir/bdist-win"
+  using "$dir/_base-job"
+  label "windows-vm"
+  steps {
+    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
+      buildNumber('$SDIST_BUILD_NUMBER')
+    }
+    batchFile '''
+      cabal get BNFC-%BNFC_VERSION%
+      cd BNFC-%BNFC_VERSION%
+      cabal sandbox init;
+      cabal install --only-dependencies
+      cabal configure
+      cabal build
+      RENAME dist\build\bnfc\bnfc.exe bnfc-%BNFC_VERSION%-win.exe
+    '''
+  }
+  publishers {
+    archiveArtifacts 'BNFC-%BNFC_VERSION%\\dist\\build\\bnfc\\bnfc-%BNFC_VERSION%.exe'
+  }
+}
 /* ~~~ Main pipeline job ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* This is an instance of a multi-job that orchestrate the whole pipeline
  * It launch the different jobs in different phases (Commit, QA and binaries)
