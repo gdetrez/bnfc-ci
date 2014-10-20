@@ -3,72 +3,8 @@ folder { name "$dir" }
 
 String githubProject = "BNFC/bnfc"
 
-job(type: Multijob) {
-  name "$dir/ci-pipeline"
-  wrappers {
-    preBuildCleanup {
-      includePattern("_artifacts")
-      deleteDirectories()
-    }
-  }
-  scm {
-    git {
-      remote {
-        github githubProject
-      }
-    }
-  }
-  steps {
-    // Those two first steps are parsing the numerical version from the cabal
-    // file and store it in an environment variable
-    shell 'sed -ne "s/^[Vv]ersion: *\\([0-9.]*\\).*/BNFC_VERSION=\\1/p" source/BNFC.cabal > version.properties'
-    environmentVariables {
-      propertiesFile('version.properties')
-    }
-    phase() {
-      phaseName 'Commit'
-      job("$dir/commit-build") {
-        gitRevision()
-        fileParam('version.properties')
-      }
-      job("$dir/sdist") {
-        gitRevision()
-        fileParam('version.properties')
-      }
-    }
-    phase() {
-      phaseName 'QA'
-      job("$dir/acceptance-tests") {
-        gitRevision()
-        fileParam('version.properties')
-        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
-      }
-      job("$dir/test-build-ghc-7.4.2") {
-        fileParam('version.properties')
-        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
-      }
-      job("$dir/test-build-ghc-7.8.3") {
-        fileParam('version.properties')
-        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
-      }
-    }
-    phase() {
-      phaseName 'Binaries'
-      job("$dir/bdist-mac") {
-        fileParam('version.properties')
-        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
-      }
-    }
-    copyArtifacts("$dir/sdist", "", "_artifacts", flattenFiles=true) {
-      buildNumber('$SDIST_BUILD_NUMBER')
-    }
-  }
-  publishers {
-    archiveArtifacts '_artifacts/*'
-  }
-}
-
-
+// Base Job
+// This represents defaults configuration for most of the other jobs
 job {
   name "$dir/_base-job"
   environmentVariables(PATH:"\$HOME/.cabal/bin:\$PATH")
@@ -79,7 +15,9 @@ job {
   }
 }
 
-job {
+
+/* ~~~ Commit stage ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+sdistJob = job {
   name "$dir/sdist"
   using "$dir/_base-job"
   scm {
@@ -97,7 +35,7 @@ job {
   }
 }
 
-job {
+commitBuildJob = job {
   name "$dir/commit-build"
   using "$dir/_base-job"
   scm {
@@ -124,7 +62,7 @@ job {
   }
 }
 
-job {
+acceptanceTestsJob = job {
   name "$dir/acceptance-tests"
   using "$dir/_base-job"
   scm {
@@ -162,7 +100,7 @@ job {
   }
 }
 
-job {
+testBuildGht742Job = job {
   name "$dir/test-build-ghc-7.4.2"
   using "$dir/_base-job"
   steps{
@@ -176,7 +114,7 @@ job {
   }
 }
 
-job {
+testBuildGht783Job = job {
   name "$dir/test-build-ghc-7.8.3"
   using "$dir/_base-job"
   steps{
@@ -192,7 +130,7 @@ job {
 
 
 /* ~~~ BINARIES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-job {
+bdistMacJob = job {
   name "$dir/bdist-mac"
   using "$dir/_base-job"
   label "mac"
@@ -217,7 +155,7 @@ job {
   }
 }
 
-job {
+bdistLinux64Job = job {
   name "$dir/bdist-linux64"
   using "$dir/_base-job"
   environmentVariables(DESTDIR: "BNFC-\$BNFC_VERSION-linux64")
@@ -237,5 +175,82 @@ job {
   }
   publishers {
     archiveArtifacts '${DESTDIR}.tar.gz'
+  }
+}
+
+/* ~~~ Main pipeline job ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* This is an instance of a multi-job that orchestrate the whole pipeline
+ * It launch the different jobs in different phases (Commit, QA and binaries)
+ * and collect the resulting binaries
+ */
+job(type: Multijob) {
+  name "$dir/ci-pipeline"
+  wrappers {
+    preBuildCleanup {
+      includePattern("_artifacts")
+      deleteDirectories()
+    }
+  }
+  scm {
+    git {
+      remote {
+        github githubProject
+      }
+    }
+  }
+  steps {
+    // Those two first steps are parsing the numerical version from the cabal
+    // file and store it in an environment variable
+    shell 'sed -ne "s/^[Vv]ersion: *\\([0-9.]*\\).*/BNFC_VERSION=\\1/p" source/BNFC.cabal > version.properties'
+    environmentVariables {
+      propertiesFile('version.properties')
+    }
+    phase() {
+      phaseName 'Commit'
+      job(commitBuildJob.name) {
+        gitRevision()
+        fileParam('version.properties')
+      }
+      job(sdistJob.name) {
+        gitRevision()
+        fileParam('version.properties')
+      }
+    }
+    phase() {
+      phaseName 'QA'
+      job(acceptanceTestsJob.name) {
+        gitRevision()
+        fileParam('version.properties')
+        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+      }
+      job(testBuildGht742Job) {
+        fileParam('version.properties')
+        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+      }
+      job(testBuildGht783Job) {
+        fileParam('version.properties')
+        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+      }
+    }
+    phase() {
+      phaseName 'Binaries'
+      job(bdistMacJob.name) {
+        fileParam('version.properties')
+        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+      }
+      job(bdistLinux64Job.name) {
+        fileParam('version.properties')
+        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+      }
+    }
+    copyArtifacts(sdistJob.name, "", "_artifacts", flattenFiles=true) {
+      buildNumber('$SDIST_BUILD_NUMBER')
+    }
+    copyArtifacts(bdistLinux64Job.name,"","_artifacts", flatterFiles = true) {
+      buildNumber('$BDIST_LINUX64_BUILD_NUMBER')
+    }
+  }
+  publishers {
+    archiveArtifacts '_artifacts/*'
   }
 }
