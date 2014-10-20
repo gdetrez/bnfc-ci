@@ -72,6 +72,7 @@ job(type: Multijob) {
 job {
   name "$dir/_base-job"
   environmentVariables(PATH:"\$HOME/.cabal/bin:\$PATH")
+  wrappers { preBuildCleanup {} }
   parameters {
     stringParam("BNFC_VERSION")
     stringParam("SDIST_BUILD_NUMBER")
@@ -99,7 +100,6 @@ job {
 job {
   name "$dir/commit-build"
   using "$dir/_base-job"
-  wrappers { preBuildCleanup {} }
   scm {
     git {
       remote {
@@ -134,7 +134,6 @@ job {
       }
     }
   }
-  wrappers { preBuildCleanup {} }
   steps {
     copyArtifacts("$dir/sdist", "", "testing/", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
@@ -166,7 +165,6 @@ job {
 job {
   name "$dir/test-build-ghc-7.4.2"
   using "$dir/_base-job"
-  wrappers { preBuildCleanup {} }
   steps{
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
@@ -181,7 +179,6 @@ job {
 job {
   name "$dir/test-build-ghc-7.8.3"
   using "$dir/_base-job"
-  wrappers { preBuildCleanup() }
   steps{
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
@@ -199,7 +196,6 @@ job {
   name "$dir/bdist-mac"
   using "$dir/_base-job"
   label "mac"
-  wrappers { preBuildCleanup {} }
   steps {
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
@@ -226,7 +222,6 @@ job {
   name "$dir/bdist-linux64"
   using "$dir/_base-job"
   environmentVariables(DESTDIR: "BNFC-\$BNFC_VERSION-linux64")
-  wrappers { preBuildCleanup {} }
   steps {
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
