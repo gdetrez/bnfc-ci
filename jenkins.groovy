@@ -163,14 +163,15 @@ bdistLinux64Job = job {
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
     }
-    shell "tar xf BNFC-\${BNFC_VERSION}.tar.gz --strip-components=1"
-    shell """
+    shell 'tar xf BNFC-${BNFC_VERSION}.tar.gz --strip-components=1'
+    shell '''
+      OPTS=--with-ghc=/opt/haskell/i386/ghc-7.8.3/bin/ghc
       cabal sandbox init
-      cabal sandbox install --only-dependencies
-      cabal configure --prefix=/
-      cabal build
-      cabal copy --destdir=\${DESTDIR}
-    """
+      cabal ${OPTS} install --only-dependencies
+      cabal ${OPTS} configure --prefix=/
+      cabal ${OPTS} build
+      cabal copy --destdir=${DESTDIR}
+    '''
     shell 'tar -cvz ${DESTDIR} ${DESTDIR}.tar.gz'
   }
   publishers {
@@ -178,6 +179,35 @@ bdistLinux64Job = job {
   }
 }
 
+bdistLinu32Job = job {
+  name "$dir/bdist-linux32"
+  using "$dir/_base-job"
+  environmentVariables(DESTDIR: "BNFC-\$BNFC_VERSION-linux32")
+  environmentVariables(CABALOPTS: "")
+  steps {
+    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
+      buildNumber('$SDIST_BUILD_NUMBER')
+    }
+    shell "tar xf BNFC-\${BNFC_VERSION}.tar.gz --strip-components=1"
+    shell '''
+      OPTS=--with-ghc=/opt/haskell/i386/ghc-7.8.3/bin/ghc
+      OPTS+=" --ghc-option=-optc-m32"
+      OPTS+=" --ghc-option=-opta-m32"
+      OPTS+=" --ghc-option=-optl-m32"
+      OPTS+=" --ld-option=-melf_i386"
+
+      cabal sandbox init
+      cabal ${OPTS} install --only-dependencies
+      cabal ${OPTS} configure --prefix=/
+      cabal ${OPTS} build
+      cabal copy --destdir=${DESTDIR}
+    '''
+    shell 'tar -cvz ${DESTDIR} ${DESTDIR}.tar.gz'
+  }
+  publishers {
+    archiveArtifacts '${DESTDIR}.tar.gz'
+  }
+}
 /* ~~~ Main pipeline job ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* This is an instance of a multi-job that orchestrate the whole pipeline
  * It launch the different jobs in different phases (Commit, QA and binaries)
