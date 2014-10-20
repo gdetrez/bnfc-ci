@@ -173,7 +173,7 @@ bdistLinux64Job = job {
     }
     shell 'tar xf BNFC-${BNFC_VERSION}.tar.gz --strip-components=1'
     shell '''
-      OPTS=--with-ghc=/opt/haskell/i386/ghc-7.8.3/bin/ghc
+      OPTS=--with-ghc=/opt/haskell/x86_64/ghc-7.8.3/bin/ghc
       cabal sandbox init
       cabal ${OPTS} install --only-dependencies
       cabal ${OPTS} configure --prefix=/
