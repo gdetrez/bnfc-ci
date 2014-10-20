@@ -35,17 +35,23 @@ job(type: Multijob) {
       job("$dir/acceptance-tests") {
         gitRevision()
         fileParam('version.properties')
+        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
       }
       job("$dir/test-build-ghc-7.4.2") {
         fileParam('version.properties')
+        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
       }
       job("$dir/test-build-ghc-7.8.3") {
         fileParam('version.properties')
+        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
       }
     }
     phase() {
       phaseName 'Binaries'
-      job("$dir/bdist-mac")
+      job("$dir/bdist-mac") {
+        fileParam('version.properties')
+        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+      }
     }
     copyArtifacts("$dir/sdist", "", "_artifacts", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
@@ -57,6 +63,10 @@ job(type: Multijob) {
 job {
   name "$dir/_base-job"
   environmentVariables(PATH:"\$HOME/.cabal/bin:\$PATH")
+  parameters {
+    stringParam("BNFC_VERSION")
+    stringParam("SDIST_BUILD_NUMBER")
+  }
 }
 
 job {
