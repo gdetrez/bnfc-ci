@@ -1,4 +1,4 @@
-String dir = 'abc'
+String dir = 'BNFC'
 folder { name "$dir" }
 
 String githubProject = "BNFC/bnfc"
