@@ -233,7 +233,7 @@ bdistMacJob = job {
       buildNumber('$SDIST_BUILD_NUMBER')
     }
     batchFile '''
-      cabal get BNFC-%BNFC_VERSION%
+      cabal get BNFC-%BNFC_VERSION%.tar.gz
       cd BNFC-%BNFC_VERSION%
       cabal sandbox init;
       cabal install --only-dependencies
