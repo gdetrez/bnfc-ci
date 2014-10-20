@@ -187,6 +187,7 @@ job {
 job {
   name "$dir/bdist-mac"
   using "$dir/_base-job"
+  label "mac"
   wrappers { preBuildCleanup {} }
   steps {
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
