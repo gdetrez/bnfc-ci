@@ -47,6 +47,9 @@ job(type: Multijob) {
       phaseName 'Binaries'
       job("$dir/bdist-mac")
     }
+    copyArtifact("$dir/sdist", "", "_artifacts", true) {
+      buildNumber('$SDIST_BUILD_NUMBER')
+    }
   }
 }
 
