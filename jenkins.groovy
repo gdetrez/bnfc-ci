@@ -114,7 +114,7 @@ job {
   }
   wrappers { preBuildCleanup {} }
   steps {
-    copyArtifacts("$dir/sdist", "", "source/", flattenFiles=true) {
+    copyArtifacts("$dir/sdist", "", "testing/", flattenFiles=true) {
       latestSuccessful()
     }
     shell """
