@@ -5,6 +5,12 @@ String githubProject = "BNFC/bnfc"
 
 job(type: Multijob) {
   name "$dir/ci-pipeline"
+  wrappers {
+    preBuildCleanup {
+      includePattern("_artifacts")
+      deleteDirectories()
+    }
+  }
   scm {
     git {
       remote {
@@ -56,6 +62,9 @@ job(type: Multijob) {
     copyArtifacts("$dir/sdist", "", "_artifacts", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
     }
+  }
+  publishers {
+    archiveArtifacts '_artifacts/*'
   }
 }
 
@@ -184,6 +193,8 @@ job {
   }
 }
 
+
+/* ~~~ BINARIES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 job {
   name "$dir/bdist-mac"
   using "$dir/_base-job"
