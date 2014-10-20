@@ -225,9 +225,13 @@ bdistLinux32Job = job {
  */
 job(type: Multijob) {
   name "$dir/ci-pipeline"
+
+  // Where to store the generated artifacts
+  String artifactDir = "_artifacts"
+
   wrappers {
     preBuildCleanup {
-      includePattern("_artifacts")
+      includePattern(artifactDir)
       deleteDirectories()
     }
   }
