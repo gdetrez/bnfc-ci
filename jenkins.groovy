@@ -50,6 +50,14 @@ job(type: Multijob) {
   }
 }
 
+
+def baseJob = job {
+  parameters {
+    stringParam("BNFC_VERSION")
+  }
+  environmentVariables(PATH:"\$HOME/.cabal/bin:\$PATH")
+}
+
 job {
   name "$dir/sdist"
   parameters {
