@@ -4,7 +4,7 @@ folder { name "$dir" }
 String githubProject = "BNFC/bnfc"
 
 job(type: Multijob) {
-  name "abc/ci-pipeline"
+  name "$dir/ci-pipeline"
   scm {
     git {
       remote {
@@ -21,25 +21,25 @@ job(type: Multijob) {
     }
     phase() {
       phaseName 'Commit'
-      job("abc/commit-build") {
+      job("$dir/commit-build") {
         gitRevision()
         fileParam('version.properties')
       }
-      job("abc/sdist") {
+      job("$dir/sdist") {
         gitRevision()
         fileParam('version.properties')
       }
     }
     phase() {
       phaseName 'QA'
-      job("abc/acceptance-tests") {
+      job("$dir/acceptance-tests") {
         gitRevision()
         fileParam('version.properties')
       }
-      job("abc/test-build-ghc-7.4.2") {
+      job("$dir/test-build-ghc-7.4.2") {
         fileParam('version.properties')
       }
-      job("abc/test-build-ghc-7.8.3") {
+      job("$dir/test-build-ghc-7.8.3") {
         fileParam('version.properties')
       }
     }
@@ -50,7 +50,7 @@ job(type: Multijob) {
 }
 
 job {
-  name 'abc/sdist'
+  name "$dir/sdist"
   scm {
     git {
       remote {
@@ -67,7 +67,7 @@ job {
 }
 
 job {
-  name "abc/commit-build"
+  name "$dir/commit-build"
   wrappers { preBuildCleanup {} }
   scm {
     git {
@@ -94,7 +94,7 @@ job {
 }
 
 job {
-  name "abc/acceptance-tests"
+  name "$dir/acceptance-tests"
   scm {
     git {
       remote {
@@ -104,7 +104,7 @@ job {
   }
   wrappers { preBuildCleanup {} }
   steps {
-    copyArtifacts("abc/sdist", "", flattenFiles=true) { latestSuccessful() }
+    copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
     shell """
       cd testing
       export CLASSPATH=.:\$(pwd)/data/javatools.jar
@@ -130,10 +130,10 @@ job {
 }
 
 job {
-  name "abc/test-build-ghc-7.4.2"
+  name "$dir/test-build-ghc-7.4.2"
   wrappers { preBuildCleanup {} }
   steps{
-    copyArtifacts("abc/sdist", "", flattenFiles=true) { latestSuccessful() }
+    copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
     shell("""
       cabal sandbox init
       cabal -v install --with-compiler=/usr/bin/ghc-7.4.2 BNFC-*.tar.gz
@@ -142,10 +142,10 @@ job {
 }
 
 job {
-  name "abc/test-build-ghc-7.8.3"
+  name "$dir/test-build-ghc-7.8.3"
   wrappers { preBuildCleanup {} }
   steps{
-    copyArtifacts("abc/sdist", "", flattenFiles=true) { latestSuccessful() }
+    copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
     shell("""
       cabal sandbox init
       cabal -v install --with-compiler=/opt/haskell/x86_64/ghc-7.8.3/bin/ghc-7.8.3  BNFC-*.tar.gz
@@ -154,10 +154,10 @@ job {
 }
 
 job {
-  name "abc/bdist-mac"
+  name "$dir/bdist-mac"
   wrappers { preBuildCleanup {} }
   steps {
-    copyArtifacts("abc/sdist", "", flattenFiles=true) { latestSuccessful() }
+    copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
     shell """
       SRCTGZ=\$(echo BNFC-*.tar.gz)
       tar xf \${SRCTGZ}
