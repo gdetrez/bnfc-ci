@@ -98,6 +98,9 @@ acceptanceTestsJob = job {
       exit 0
     """
   }
+  publishers {
+    archiveJunit('testing/bnfc-system-tests.xml', true)
+  }
 }
 
 testBuildGht742Job = job {
