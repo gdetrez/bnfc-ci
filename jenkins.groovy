@@ -163,7 +163,10 @@ bdistMacJob = job {
 bdistLinux64Job = job {
   name "$dir/bdist-linux64"
   using "$dir/_base-job"
-  environmentVariables(DESTDIR: "BNFC-\$BNFC_VERSION-linux64")
+  environmentVariables {
+    env('DESTDIR', 'BNFC-${BNFC_VERSION}-linux64')
+    env('PATH', '$HOME/.cabal/bin:$PATH')
+  }
   steps {
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
@@ -189,6 +192,7 @@ bdistLinux32Job = job {
   using "$dir/_base-job"
   environmentVariables {
     env('DESTDIR', 'BNFC-${BNFC_VERSION}-linux32')
+    env('PATH', '$HOME/.cabal/bin:$PATH')
   }
   steps {
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
