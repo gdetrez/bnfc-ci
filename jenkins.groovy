@@ -13,16 +13,32 @@ job(type: Multijob) {
   }
   steps {
     shell 'sed -ne "s/^version: *\\([0-9.]*\\).*/BNFC_VERSION=\\1/p" source/BNFC.cabal > version.properties'
+    environmentVariables {
+      propertiesFile('version.properties')
+    }
     phase() {
       phaseName 'Commit'
-      job("abc/commit-build") { gitRevision() }
-      job("abc/sdist") { gitRevision() }
+      job("abc/commit-build") {
+        gitRevision()
+        fileParam('version.properties')
+      }
+      job("abc/sdist") {
+        gitRevision()
+        fileParam('version.properties')
+      }
     }
     phase() {
       phaseName 'QA'
-      job("abc/acceptance-tests") { gitRevision() }
-      job("abc/test-build-ghc-7.4.2")
-      job("abc/test-build-ghc-7.8.3")
+      job("abc/acceptance-tests") {
+        gitRevision()
+        fileParam('version.properties')
+      }
+      job("abc/test-build-ghc-7.4.2") {
+        fileParam('version.properties')
+      }
+      job("abc/test-build-ghc-7.8.3") {
+        fileParam('version.properties')
+      }
     }
     phase() {
       phaseName 'Binaries'
