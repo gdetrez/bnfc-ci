@@ -15,7 +15,7 @@ job(type: Multijob) {
   steps {
     // Those two first steps are parsing the numerical version from the cabal
     // file and store it in an environment variable
-    shell 'sed -ne "s/^version: *\\([0-9.]*\\).*/BNFC_VERSION=\\1/p" source/BNFC.cabal > version.properties'
+    shell 'sed -ne "s/^[Vv]ersion: *\\([0-9.]*\\).*/BNFC_VERSION=\\1/p" source/BNFC.cabal > version.properties'
     environmentVariables {
       propertiesFile('version.properties')
     }
