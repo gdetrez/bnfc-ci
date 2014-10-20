@@ -51,6 +51,9 @@ job(type: Multijob) {
 
 job {
   name "$dir/sdist"
+  parameters {
+    stringParam("BNFC_VERSION")
+  }
   scm {
     git {
       remote {
