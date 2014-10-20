@@ -52,6 +52,7 @@ job(type: Multijob) {
 
 
 def baseJob = job {
+  name "_base-job"
   parameters {
     stringParam("BNFC_VERSION")
   }
