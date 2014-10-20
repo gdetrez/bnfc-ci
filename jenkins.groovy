@@ -154,7 +154,7 @@ job {
   }
 }
 
-def copySdist(target = '') {
+def Closure copySdist(target = '') {
    copyArtifacts("$dir/sdist", target, flattenFiles=true) {
     buildNumber('$SDIST_BUILD_NUMBER')
   }
