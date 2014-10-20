@@ -246,6 +246,9 @@ job(type: Multijob) {
     copyArtifacts(sdistJob.name, "", "_artifacts", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
     }
+    copyArtifacts(bdistMacJob.name,"","_artifacts", flatterFiles = true) {
+      buildNumber('$BDIST_MAC_BUILD_NUMBER')
+    }
     copyArtifacts(bdistLinux64Job.name,"","_artifacts", flatterFiles = true) {
       buildNumber('$BDIST_LINUX64_BUILD_NUMBER')
     }
