@@ -212,8 +212,8 @@ job {
         dist/BNFC-\${BNFC_VERSION}-mac.pkg
     """
   }
-  publisher {
-    archiveArtifacts 'BNFC-$BNFC_VERSION-mac.pkg'
+  publishers {
+    archiveArtifacts 'BNFC-${BNFC_VERSION}-mac.pkg'
   }
 }
 
@@ -235,7 +235,7 @@ job {
     """
     shell 'tar -cvz ${DESTDIR} ${DESTDIR}.tar.gz'
   }
-  publisher {
-    archiveArtifacts '\${DESTDIR}.tar.gz'
+  publishers {
+    archiveArtifacts '${DESTDIR}.tar.gz'
   }
 }
