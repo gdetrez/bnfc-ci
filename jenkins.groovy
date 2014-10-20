@@ -7,7 +7,9 @@ String githubProject = "BNFC/bnfc"
 // This represents defaults configuration for most of the other jobs
 job {
   name "$dir/_base-job"
-  environmentVariables(PATH:"\$HOME/.cabal/bin:\$PATH")
+  environmentVariables {
+    env('PATH', '$HOME/.cabal/bin:$PATH')
+  }
   wrappers { preBuildCleanup {} }
   parameters {
     stringParam("BNFC_VERSION")
@@ -185,8 +187,10 @@ bdistLinux64Job = job {
 bdistLinux32Job = job {
   name "$dir/bdist-linux32"
   using "$dir/_base-job"
+  environmentVariables {
+    env('DESTDIR', 'BNFC-${BNFC_VERSION}-linux32')
+  }
   steps {
-    environmentVariables(DESTDIR: "BNFC-\$BNFC_VERSION-linux32")
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
     }
