@@ -154,12 +154,18 @@ job {
   }
 }
 
+def copySdist(target = '') {
+   copyArtifacts("$dir/sdist", target, flattenFiles=true) {
+    buildNumber('$SDIST_BUILD_NUMBER')
+  }
+}
+
 job {
   name "$dir/test-build-ghc-7.4.2"
   using "$dir/_base-job"
   wrappers { preBuildCleanup {} }
   steps{
-    copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
+    copySdist()
     shell("""
       cabal sandbox init
       cabal -v install --with-compiler=/usr/bin/ghc-7.4.2 BNFC-*.tar.gz
