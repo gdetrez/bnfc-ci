@@ -151,7 +151,7 @@ bdistMacJob = job {
     """
   }
   publishers {
-    archiveArtifacts 'BNFC-${BNFC_VERSION}-mac.pkg'
+    archiveArtifacts 'dist/BNFC-${BNFC_VERSION}-mac.pkg'
   }
 }
 
