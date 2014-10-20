@@ -4,6 +4,13 @@ String githubProject = "BNFC/bnfc"
 
 job(type: Multijob) {
   name "abc/ci-pipeline"
+  scm {
+    git {
+      remote {
+        github githubProject
+      }
+    }
+  }
   steps {
     phase() {
       phaseName 'Commit'
