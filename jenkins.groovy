@@ -51,13 +51,14 @@ job(type: Multijob) {
 }
 
 
-def baseJob = job {
-  name "_base-job"
+job {
+  name "$dir/_base-job"
   environmentVariables(PATH:"\$HOME/.cabal/bin:\$PATH")
 }
 
-baseJob.with {
+job {
   name "$dir/sdist"
+  using "$dir/_base-job"
   scm {
     git {
       remote {
@@ -73,8 +74,9 @@ baseJob.with {
   }
 }
 
-baseJob.with {
+job {
   name "$dir/commit-build"
+  using "$dir/_base-job"
   wrappers { preBuildCleanup {} }
   scm {
     git {
@@ -100,8 +102,9 @@ baseJob.with {
   }
 }
 
-baseJob.with {
+job {
   name "$dir/acceptance-tests"
+  using "$dir/_base-job"
   scm {
     git {
       remote {
@@ -138,8 +141,9 @@ baseJob.with {
   }
 }
 
-baseJob.with {
+job {
   name "$dir/test-build-ghc-7.4.2"
+  using "$dir/_base-job"
   wrappers { preBuildCleanup {} }
   steps{
     copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
@@ -150,9 +154,10 @@ baseJob.with {
   }
 }
 
-baseJob.with {
+job {
   name "$dir/test-build-ghc-7.8.3"
-  wrappers { preBuildCleanup {} }
+  using "$dir/_base-job"
+  wrappers { preBuildCleanup() }
   steps{
     copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
     shell("""
@@ -162,8 +167,9 @@ baseJob.with {
   }
 }
 
-baseJob.with {
+job {
   name "$dir/bdist-mac"
+  using "$dir/_base-job"
   wrappers { preBuildCleanup {} }
   steps {
     copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
