@@ -294,20 +294,20 @@ job(type: Multijob) {
         prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
       }
     }
-    copyArtifacts(sdistJob.name, "", "_artifacts", flattenFiles=true) {
+    copyArtifacts(sdistJob.name, "", artifactDir, flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
     }
-    copyArtifacts(bdistMacJob.name,"","_artifacts", flatterFiles = true) {
+    copyArtifacts(bdistMacJob.name,"",artifactDir, flatterFiles = true) {
       buildNumber('$BDIST_MAC_BUILD_NUMBER')
     }
-    copyArtifacts(bdistLinux32Job.name,"","_artifacts", flatterFiles = true) {
+    copyArtifacts(bdistLinux32Job.name,"",artifactDir, flatterFiles = true) {
       buildNumber('$BDIST_LINUX32_BUILD_NUMBER')
     }
-    copyArtifacts(bdistLinux64Job.name,"","_artifacts", flatterFiles = true) {
+    copyArtifacts(bdistLinux64Job.name,"",artifactDir, flatterFiles = true) {
       buildNumber('$BDIST_LINUX64_BUILD_NUMBER')
     }
   }
   publishers {
-    archiveArtifacts '_artifacts/*'
+    archiveArtifacts "$artifactDir/*"
   }
 }
