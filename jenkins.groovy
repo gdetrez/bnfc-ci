@@ -128,7 +128,7 @@ job {
   wrappers { preBuildCleanup {} }
   steps {
     copyArtifacts("$dir/sdist", "", "testing/", flattenFiles=true) {
-      latestSuccessful()
+      buildNumber('$SDIST_BUILD_NUMBER')
     }
     shell """
       cd testing
@@ -154,18 +154,14 @@ job {
   }
 }
 
-def Closure copySdist(target = '') {
-   copyArtifacts("$dir/sdist", target, flattenFiles=true) {
-    buildNumber('$SDIST_BUILD_NUMBER')
-  }
-}
-
 job {
   name "$dir/test-build-ghc-7.4.2"
   using "$dir/_base-job"
   wrappers { preBuildCleanup {} }
   steps{
-    copySdist()
+    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
+      buildNumber('$SDIST_BUILD_NUMBER')
+    }
     shell("""
       cabal sandbox init
       cabal -v install --with-compiler=/usr/bin/ghc-7.4.2 BNFC-*.tar.gz
@@ -178,7 +174,9 @@ job {
   using "$dir/_base-job"
   wrappers { preBuildCleanup() }
   steps{
-    copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
+    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
+      buildNumber('$SDIST_BUILD_NUMBER')
+    }
     shell("""
       cabal sandbox init
       cabal -v install --with-compiler=/opt/haskell/x86_64/ghc-7.8.3/bin/ghc-7.8.3  BNFC-*.tar.gz
@@ -191,7 +189,9 @@ job {
   using "$dir/_base-job"
   wrappers { preBuildCleanup {} }
   steps {
-    copyArtifacts("$dir/sdist", "", flattenFiles=true) { latestSuccessful() }
+    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
+      buildNumber('$SDIST_BUILD_NUMBER')
+    }
     shell """
       tar xf BNFC-\${BNFC_VERSION}.tar.gz
       cd BNFC-\${BNFC_VERSION}
