@@ -132,3 +132,25 @@ job {
     """)
   }
 }
+
+job {
+  name "abc/bdist-mac"
+  wrappers { preBuildCleanup {} }
+  steps {
+    copyArtifacts("abc/sdist", "", flattenFiles=true) { latestSuccessful() }
+    shell """
+      SRCTGZ=\$(echo BNFC-*.tar.gz)
+      tar xf \${SRCTGZ}
+      cd \${SRCTGZ%.tar.gz}
+      BNFC_VERSION=\$(sed -n 's/^Version:[ \t]*\(.*\)\$/\1/p' BNFC.cabal)
+      runhaskell Setup.lhs configure --prefix=/usr
+      runhaskell Setup.lhs build
+      runhaskell Setup.lhs copy --destdir=\$(pwd)/dist/install
+      pkgbuild --identifier com.digitalgrammars.bnfc.pkg \
+        --version \${BNFC_VERSION} \
+        --root \$(pwd)/dist/install/usr/bin \
+        --install-location /usr/bin \
+        dist/BNFC-\${BNFC_VERSION}-mac.pkg
+    """
+  }
+}
