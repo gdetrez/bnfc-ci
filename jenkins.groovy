@@ -224,7 +224,7 @@ bdistLinux32Job = job {
   }
 }
 
-bdistMacJob = job {
+bdistWinJob = job {
   name "$dir/bdist-win"
   using "$dir/_base-job"
   label "windows-vm"
@@ -321,6 +321,10 @@ job(type: Multijob) {
         fileParam('version.properties')
         prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
       }
+      job(bdistWinJob.name) {
+        fileParam('version.properties')
+        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+      }
     }
     copyArtifacts(sdistJob.name, "", artifactDir, flattenFiles=true) {
       buildNumber('$SDIST_BUILD_NUMBER')
@@ -333,6 +337,9 @@ job(type: Multijob) {
     }
     copyArtifacts(bdistLinux64Job.name,"",artifactDir, flatterFiles = true) {
       buildNumber('$BDIST_LINUX64_BUILD_NUMBER')
+    }
+    copyArtifacts(bdistWinJob.name,"",artifactDir, flatterFiles = true) {
+      buildNumber('$BDIST_WIN_BUILD_NUMBER')
     }
   }
   publishers {
