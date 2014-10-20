@@ -1,5 +1,5 @@
 String dir = 'abc'
-folder { name '$dir' }
+folder { name "$dir" }
 
 String githubProject = "BNFC/bnfc"
 
