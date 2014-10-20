@@ -180,7 +180,7 @@ bdistLinux64Job = job {
       cabal ${OPTS} build
       cabal copy --destdir=${DESTDIR}
     '''
-    shell 'tar -cvz ${DESTDIR} ${DESTDIR}.tar.gz'
+    shell 'tar -cvz ${DESTDIR} > ${DESTDIR}.tar.gz'
   }
   publishers {
     archiveArtifacts '${DESTDIR}.tar.gz'
@@ -212,7 +212,7 @@ bdistLinux32Job = job {
       cabal ${OPTS} build
       cabal copy --destdir=${DESTDIR}
     '''
-    shell 'tar -cvz ${DESTDIR} ${DESTDIR}.tar.gz'
+    shell 'tar -cvz ${DESTDIR} > ${DESTDIR}.tar.gz'
   }
   publishers {
     archiveArtifacts '${DESTDIR}.tar.gz'
