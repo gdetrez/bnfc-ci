@@ -96,7 +96,7 @@ acceptanceTestsJob = job {
 
       # Run tests
       set +e
-      cabal exec cabal -- run -- --xml=bnfc-system-tests.xml
+      cabal exec cabal -- run -- --xml=bnfc-system-tests.xml -j2
       exit 0
     """
   }
