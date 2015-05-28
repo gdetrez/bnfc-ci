@@ -114,7 +114,7 @@ testBuildGht742Job = job {
     }
     shell("""
       cabal sandbox init
-      cabal -v install --with-compiler=/opt/haskell/x86_64/ghc-7.4.2/bin/ghc-7.4.2  BNFC-*.tar.gz
+      cabal -v install --enable-tests --with-compiler=/opt/haskell/x86_64/ghc-7.4.2/bin/ghc-7.4.2  BNFC-*.tar.gz
     """)
   }
 }
