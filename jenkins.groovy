@@ -105,20 +105,6 @@ acceptanceTestsJob = job {
   }
 }
 
-testBuildGht742Job = job {
-  name "$dir/test-build-ghc-7.4.2"
-  using "$dir/_base-job"
-  steps{
-    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
-      buildNumber('$SDIST_BUILD_NUMBER')
-    }
-    shell("""
-      cabal sandbox init
-      cabal -v install --enable-tests --with-compiler=/opt/haskell/x86_64/ghc-7.4.2/bin/ghc-7.4.2  BNFC-*.tar.gz
-    """)
-  }
-}
-
 testBuildGht783Job = job {
   name "$dir/test-build-ghc-7.8.3"
   using "$dir/_base-job"
@@ -133,6 +119,19 @@ testBuildGht783Job = job {
   }
 }
 
+testBuildGht7101Job = job {
+  name "$dir/test-build-ghc-7.10.1"
+  using "$dir/_base-job"
+  steps{
+    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
+      buildNumber('$SDIST_BUILD_NUMBER')
+    }
+    shell("""
+      cabal sandbox init
+      cabal -v install --enable-tests --with-compiler=/usr/local/ghc-7.10.1/bin/ghc-7.10.1  BNFC-*.tar.gz
+    """)
+  }
+}
 
 /* ~~~ BINARIES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 bdistMacJob = job {
@@ -298,11 +297,11 @@ job(type: Multijob) {
         fileParam('version.properties')
         prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
       }
-      job(testBuildGht742Job.name) {
+      job(testBuildGht783Job.name) {
         fileParam('version.properties')
         prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
       }
-      job(testBuildGht783Job.name) {
+      job(testBuildGht7101Job.name) {
         fileParam('version.properties')
         prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
       }
