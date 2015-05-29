@@ -128,7 +128,7 @@ testBuildGht783Job = job {
     }
     shell("""
       cabal sandbox init
-      cabal -v install --with-compiler=/opt/haskell/x86_64/ghc-7.8.3/bin/ghc-7.8.3  BNFC-*.tar.gz
+      cabal -v install --enable-tests --with-compiler=/opt/haskell/x86_64/ghc-7.8.3/bin/ghc-7.8.3  BNFC-*.tar.gz
     """)
   }
 }
