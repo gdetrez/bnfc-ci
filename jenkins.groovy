@@ -89,19 +89,6 @@ acceptanceTestsJob = freeStyleJob("$dir/acceptance-tests") {
   }
 }
 
-testBuildGht783Job = freeStyleJob("$dir/test-build-ghc-7.8.3") {
-  using "$dir/_base-job"
-  steps{
-    copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
-      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
-    }
-    shell("""
-      cabal sandbox init
-      cabal -v install --enable-tests --with-compiler=/opt/haskell/x86_64/ghc-7.8.3/bin/ghc-7.8.3  BNFC-*.tar.gz
-    """)
-  }
-}
-
 testBuildGht7101Job = freeStyleJob("$dir/test-build-ghc-7.10.1") {
   using "$dir/_base-job"
   steps{
@@ -129,14 +116,16 @@ testInstallJob = matrixJob("$dir/bnfc-install-tests") {
   }
   steps {
     copyArtifacts(commitBuildJob.name, '', true) {
-      // buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
-      latestSuccessful(true)
+      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
     }
     shell """
       cabal sandbox init
       cabal -v install BNFC-*.tar.gz \
         --with-compiler=/srv/ghc/x86_64/ghc-\${GHC_VERSION}/bin/ghc-\${GHC_VERSION}
     """
+  }
+  publishers {
+    warnings(['Glasgow Haskell Compiler'], ['Glasgow Haskell Compiler': '.cabal-sandbox/logs/BNFC-${BNFC_VERSION}.log'])
   }
 }
 
