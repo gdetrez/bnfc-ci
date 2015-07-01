@@ -133,9 +133,26 @@ testBuildGht7101Job = freeStyleJob("$dir/test-build-ghc-7.10.1") {
 }
 
 testInstallJob = matrixJob("$dir/bnfc-install-tests") {
-  using "$dir/_base-job"
   axes {
     text("GHC_VERSION", "7.6.1")
+  }
+  environmentVariables {
+    env('PATH', '$HOME/.cabal/bin:$PATH')
+  }
+  wrappers { preBuildCleanup {} }
+  parameters {
+    stringParam("BNFC_VERSION")
+    stringParam("COMMIT_BUILD_BUILD_NUMBER")
+  }
+  steps {
+    copyArtifacts("$dir/commit-build", "", flattenFiles=true) {
+      // buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
+    }
+    shell """
+      cabal sandbox init
+      ls
+      env
+    """
   }
 }
 
