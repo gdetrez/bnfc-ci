@@ -1,5 +1,5 @@
 String dir = 'BNFC'
-folder { name "$dir" }
+folder("$dir")
 
 String githubProject = "BNFC/bnfc"
 
@@ -100,7 +100,9 @@ acceptanceTestsJob = freeStyleJob("$dir/acceptance-tests") {
     """
   }
   publishers {
-    archiveJunit('testing/bnfc-system-tests.xml', true)
+    archiveJunit('testing/bnfc-system-tests.xml') {
+      retainLongStdout true
+    }
   }
 }
 
