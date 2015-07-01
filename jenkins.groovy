@@ -125,7 +125,7 @@ testInstallJob = matrixJob("$dir/bnfc-install-tests") {
     """
   }
   publishers {
-    warnings(['Glasgow Haskell Compiler'], ['Glasgow Haskell Compiler': '.cabal-sandbox/logs/BNFC-${BNFC_VERSION}.log'])
+    warnings([], ['Glasgow Haskell Compiler': '.cabal-sandbox/logs/BNFC-${BNFC_VERSION}.log'])
   }
 }
 
