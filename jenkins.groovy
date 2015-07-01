@@ -48,7 +48,8 @@ commitBuildJob = freeStyleJob("$dir/bnfc-build") {
   }
 }
 
-acceptanceTestsJob = freeStyleJob("$dir/acceptance-tests") {
+acceptanceTestsJob = freeStyleJob("$dir/bnfc-system-tests") {
+  previousNames "$dir/acceptance-tests"
   using "$dir/_base-job"
   scm {
     git {
@@ -58,7 +59,7 @@ acceptanceTestsJob = freeStyleJob("$dir/acceptance-tests") {
     }
   }
   steps {
-    copyArtifacts("$dir/commit-build", "", "testing/", flattenFiles=true) {
+    copyArtifacts(commitBuildJob.name, "", "testing/", flattenFiles=true) {
       buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
     }
     shell """
@@ -131,7 +132,8 @@ testInstallJob = matrixJob("$dir/bnfc-install-tests") {
 }
 
 /* ~~~ BINARIES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-bdistMacJob = freeStyleJob("$dir/bdist-mac") {
+bdistMacJob = freeStyleJob("$dir/bnfc-bdist-mac") {
+  previousNames "$dir/bdist-mac"
   using "$dir/_base-job"
   label "mac"
   steps {
@@ -156,7 +158,8 @@ bdistMacJob = freeStyleJob("$dir/bdist-mac") {
   }
 }
 
-bdistLinux64Job = freeStyleJob("$dir/bdist-linux64") {
+bdistLinux64Job = freeStyleJob("$dir/bnfc-bdist-linux64") {
+  previousNames "$dir/bdist-linux64"
   using "$dir/_base-job"
   environmentVariables {
     env('DESTDIR', 'BNFC-${BNFC_VERSION}-linux64')
@@ -184,7 +187,8 @@ bdistLinux64Job = freeStyleJob("$dir/bdist-linux64") {
   }
 }
 
-bdistLinux32Job = freeStyleJob("$dir/bdist-linux32") {
+bdistLinux32Job = freeStyleJob("$dir/bnfc-bdist-linux32") {
+  previousNames "$dir/bdist-linux32"
   using "$dir/_base-job"
   environmentVariables {
     env('DESTDIR', 'BNFC-${BNFC_VERSION}-linux32')
@@ -217,7 +221,8 @@ bdistLinux32Job = freeStyleJob("$dir/bdist-linux32") {
   }
 }
 
-bdistWinJob = freeStyleJob("$dir/bdist-win") {
+bdistWinJob = freeStyleJob("$dir/bnfc-bdist-win") {
+  previousNames "$dir/bdist-win"
   using "$dir/_base-job"
   label "windows-vm"
   steps {
@@ -243,7 +248,8 @@ bdistWinJob = freeStyleJob("$dir/bdist-win") {
  * It launch the different jobs in different phases (Commit, QA and binaries)
  * and collect the resulting binaries
  */
-multiJob("$dir/ci-pipeline") {
+multiJob("$dir/bnfc-pipeline") {
+  previousNames "$dir/ci-pipeline"
 
   // Where to store the generated artifacts
   String artifactDir = "_artifacts"
