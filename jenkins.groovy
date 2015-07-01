@@ -12,7 +12,7 @@ freeStyleJob("$dir/_base-job") {
   wrappers { preBuildCleanup {} }
   parameters {
     stringParam("BNFC_VERSION")
-    stringParam("COMMIT_BUILD_BUILD_NUMBER")
+    stringParam("BNFC_BUILD_BUILD_NUMBER")
   }
 }
 
@@ -60,7 +60,7 @@ acceptanceTestsJob = freeStyleJob("$dir/bnfc-system-tests") {
   }
   steps {
     copyArtifacts(commitBuildJob.name, "", "testing/", flattenFiles=true) {
-      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
+      buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
     shell """
       cd testing
@@ -95,7 +95,7 @@ testInstallEnableTestsJob = freeStyleJob("$dir/bnfc-test-install-enable-tests") 
   using "$dir/_base-job"
   steps{
     copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
-      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
+      buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
     shell("""
       cabal sandbox init
@@ -114,11 +114,11 @@ testInstallJob = matrixJob("$dir/bnfc-install-tests") {
   wrappers { preBuildCleanup {} }
   parameters {
     stringParam("BNFC_VERSION")
-    stringParam("COMMIT_BUILD_BUILD_NUMBER")
+    stringParam("BNFC_BUILD_BUILD_NUMBER")
   }
   steps {
     copyArtifacts(commitBuildJob.name, '', true) {
-      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
+      buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
     shell """
       cabal sandbox init
@@ -138,7 +138,7 @@ bdistMacJob = freeStyleJob("$dir/bnfc-bdist-mac") {
   label "mac"
   steps {
     copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
-      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
+      buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
     shell 'tar xf BNFC-${BNFC_VERSION}.tar.gz --strip-components=1'
     shell """
@@ -167,7 +167,7 @@ bdistLinux64Job = freeStyleJob("$dir/bnfc-bdist-linux64") {
   }
   steps {
     copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
-      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
+      buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
     shell 'tar xf BNFC-${BNFC_VERSION}.tar.gz --strip-components=1'
     shell '''
@@ -196,7 +196,7 @@ bdistLinux32Job = freeStyleJob("$dir/bnfc-bdist-linux32") {
   }
   steps {
     copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
-      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
+      buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
     shell "tar xf BNFC-\${BNFC_VERSION}.tar.gz --strip-components=1"
     shell '''
@@ -227,7 +227,7 @@ bdistWinJob = freeStyleJob("$dir/bnfc-bdist-win") {
   label "windows-vm"
   steps {
     copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
-      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
+      buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
     batchFile '''
       cabal get BNFC-%BNFC_VERSION%.tar.gz
@@ -289,38 +289,38 @@ multiJob("$dir/bnfc-pipeline") {
       job(acceptanceTestsJob.name) {
         gitRevision()
         fileParam('version.properties')
-        prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
+        prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
       }
       job(testInstallJob.name) {
         fileParam('version.properties')
-        prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
+        prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
       }
       job(testInstallEnableTestsJob.name) {
         fileParam('version.properties')
-        prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
+        prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
       }
     }
     phase() {
       phaseName 'Binaries'
       job(bdistMacJob.name) {
         fileParam('version.properties')
-        prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
+        prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
       }
       job(bdistLinux32Job.name) {
         fileParam('version.properties')
-        prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
+        prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
       }
       job(bdistLinux64Job.name) {
         fileParam('version.properties')
-        prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
+        prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
       }
       //job(bdistWinJob.name) {
       //  fileParam('version.properties')
-      //  prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
+      //  prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
       //}
     }
     copyArtifacts(commitBuildJob.name, "", artifactDir, flattenFiles=true) {
-      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
+      buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
     copyArtifacts(bdistMacJob.name,"",artifactDir, flatterFiles = true) {
       buildNumber('$BDIST_MAC_BUILD_NUMBER')
