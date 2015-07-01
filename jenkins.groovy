@@ -145,9 +145,12 @@ testInstallJob = matrixJob("$dir/bnfc-install-tests") {
     stringParam("COMMIT_BUILD_BUILD_NUMBER")
   }
   steps {
-    copyArtifacts("$dir/commit-build", "", flattenFiles=true) {
+    copyArtifacts("$dir/commit-build") {
       // buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
-      latestSuccessful
+      flatten()
+      buildSelector {
+        latestSuccessful(true)
+      }
     }
     shell """
       cabal sandbox init
