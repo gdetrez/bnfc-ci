@@ -18,23 +18,6 @@ freeStyleJob("$dir/_base-job") {
 
 
 /* ~~~ Commit stage ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-sdistJob = freeStyleJob("$dir/sdist") {
-  using "$dir/_base-job"
-  scm {
-    git {
-      remote {
-        github githubProject
-      }
-    }
-  }
-  steps {
-    shell "cd source; cabal sdist"
-  }
-  publishers {
-    archiveArtifacts 'source/dist/BNFC-${BNFC_VERSION}.tar.gz'
-  }
-}
-
 commitBuildJob = freeStyleJob("$dir/commit-build") {
   using "$dir/_base-job"
   scm {
@@ -304,10 +287,6 @@ multiJob("$dir/ci-pipeline") {
         gitRevision()
         fileParam('version.properties')
       }
-      job(sdistJob.name) {
-        gitRevision()
-        fileParam('version.properties')
-      }
     }
     phase() {
       phaseName 'QA'
@@ -316,7 +295,7 @@ multiJob("$dir/ci-pipeline") {
         fileParam('version.properties')
         prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
       }
-      job(testBuildGht783Job.name) {
+      job(testInstallJob.name) {
         fileParam('version.properties')
         prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
       }
@@ -356,9 +335,9 @@ multiJob("$dir/ci-pipeline") {
     copyArtifacts(bdistLinux64Job.name,"",artifactDir, flatterFiles = true) {
       buildNumber('$BDIST_LINUX64_BUILD_NUMBER')
     }
-    copyArtifacts(bdistWinJob.name,"",artifactDir, flatterFiles = true) {
-      buildNumber('$BDIST_WIN_BUILD_NUMBER')
-    }
+    // copyArtifacts(bdistWinJob.name,"",artifactDir, flatterFiles = true) {
+    //   buildNumber('$BDIST_WIN_BUILD_NUMBER')
+    // }
   }
   publishers {
     archiveArtifacts "$artifactDir/*"
