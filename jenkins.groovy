@@ -12,7 +12,7 @@ freeStyleJob("$dir/_base-job") {
   wrappers { preBuildCleanup {} }
   parameters {
     stringParam("BNFC_VERSION")
-    stringParam("SDIST_BUILD_NUMBER")
+    stringParam("COMMIT_BUILD_BUILD_NUMBER")
   }
 }
 
@@ -74,8 +74,8 @@ acceptanceTestsJob = freeStyleJob("$dir/acceptance-tests") {
     }
   }
   steps {
-    copyArtifacts("$dir/sdist", "", "testing/", flattenFiles=true) {
-      buildNumber('$SDIST_BUILD_NUMBER')
+    copyArtifacts("$dir/commit-build", "", "testing/", flattenFiles=true) {
+      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
     }
     shell """
       cd testing
@@ -109,8 +109,8 @@ acceptanceTestsJob = freeStyleJob("$dir/acceptance-tests") {
 testBuildGht783Job = freeStyleJob("$dir/test-build-ghc-7.8.3") {
   using "$dir/_base-job"
   steps{
-    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
-      buildNumber('$SDIST_BUILD_NUMBER')
+    copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
+      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
     }
     shell("""
       cabal sandbox init
@@ -122,8 +122,8 @@ testBuildGht783Job = freeStyleJob("$dir/test-build-ghc-7.8.3") {
 testBuildGht7101Job = freeStyleJob("$dir/test-build-ghc-7.10.1") {
   using "$dir/_base-job"
   steps{
-    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
-      buildNumber('$SDIST_BUILD_NUMBER')
+    copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
+      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
     }
     shell("""
       cabal sandbox init
@@ -145,7 +145,7 @@ testInstallJob = matrixJob("$dir/bnfc-install-tests") {
     stringParam("COMMIT_BUILD_BUILD_NUMBER")
   }
   steps {
-    copyArtifacts("$dir/commit-build", '', true) {
+    copyArtifacts(commitBuildJob.name, '', true) {
       // buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
       latestSuccessful(true)
     }
@@ -162,8 +162,8 @@ bdistMacJob = freeStyleJob("$dir/bdist-mac") {
   using "$dir/_base-job"
   label "mac"
   steps {
-    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
-      buildNumber('$SDIST_BUILD_NUMBER')
+    copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
+      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
     }
     shell 'tar xf BNFC-${BNFC_VERSION}.tar.gz --strip-components=1'
     shell """
@@ -190,8 +190,8 @@ bdistLinux64Job = freeStyleJob("$dir/bdist-linux64") {
     env('PATH', '$HOME/.cabal/bin:$PATH')
   }
   steps {
-    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
-      buildNumber('$SDIST_BUILD_NUMBER')
+    copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
+      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
     }
     shell 'tar xf BNFC-${BNFC_VERSION}.tar.gz --strip-components=1'
     shell '''
@@ -218,8 +218,8 @@ bdistLinux32Job = freeStyleJob("$dir/bdist-linux32") {
     env('PATH', '$HOME/.cabal/bin:$PATH')
   }
   steps {
-    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
-      buildNumber('$SDIST_BUILD_NUMBER')
+    copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
+      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
     }
     shell "tar xf BNFC-\${BNFC_VERSION}.tar.gz --strip-components=1"
     shell '''
@@ -248,8 +248,8 @@ bdistWinJob = freeStyleJob("$dir/bdist-win") {
   using "$dir/_base-job"
   label "windows-vm"
   steps {
-    copyArtifacts("$dir/sdist", "", flattenFiles=true) {
-      buildNumber('$SDIST_BUILD_NUMBER')
+    copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
+      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
     }
     batchFile '''
       cabal get BNFC-%BNFC_VERSION%.tar.gz
@@ -314,38 +314,38 @@ multiJob("$dir/ci-pipeline") {
       job(acceptanceTestsJob.name) {
         gitRevision()
         fileParam('version.properties')
-        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+        prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
       }
       job(testBuildGht783Job.name) {
         fileParam('version.properties')
-        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+        prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
       }
       job(testBuildGht7101Job.name) {
         fileParam('version.properties')
-        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+        prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
       }
     }
     phase() {
       phaseName 'Binaries'
       job(bdistMacJob.name) {
         fileParam('version.properties')
-        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+        prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
       }
       job(bdistLinux32Job.name) {
         fileParam('version.properties')
-        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+        prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
       }
       job(bdistLinux64Job.name) {
         fileParam('version.properties')
-        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
+        prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
       }
-      job(bdistWinJob.name) {
-        fileParam('version.properties')
-        prop("SDIST_BUILD_NUMBER", '$SDIST_BUILD_NUMBER')
-      }
+      //job(bdistWinJob.name) {
+      //  fileParam('version.properties')
+      //  prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
+      //}
     }
-    copyArtifacts(sdistJob.name, "", artifactDir, flattenFiles=true) {
-      buildNumber('$SDIST_BUILD_NUMBER')
+    copyArtifacts(commitBuildJob.name, "", artifactDir, flattenFiles=true) {
+      buildNumber('$COMMIT_BUILD_BUILD_NUMBER')
     }
     copyArtifacts(bdistMacJob.name,"",artifactDir, flatterFiles = true) {
       buildNumber('$BDIST_MAC_BUILD_NUMBER')
