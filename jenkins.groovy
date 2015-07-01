@@ -177,6 +177,7 @@ bdistLinux64Job = freeStyleJob("$dir/bnfc-bdist-linux64") {
       cabal ${OPTS} configure --prefix=/
       cabal ${OPTS} build
       cabal copy --destdir=dist/install
+      mkdir ${DESTDIR}
       cp dist/install/bin/bnfc ${DESTDIR}
       cp LICENSE ${DESTDIR}
     '''
@@ -211,6 +212,7 @@ bdistLinux32Job = freeStyleJob("$dir/bnfc-bdist-linux32") {
       cabal ${OPTS} configure --prefix=/
       cabal ${OPTS} build
       cabal copy --destdir=dist/install
+      mkdir ${DESTDIR}
       cp dist/install/bin/bnfc ${DESTDIR}
       cp LICENSE ${DESTDIR}
     '''
