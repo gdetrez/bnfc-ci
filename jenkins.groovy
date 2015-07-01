@@ -61,6 +61,7 @@ commitBuildJob = job {
   }
   publishers {
     warnings(['Glasgow Haskell Compiler'])
+    tasks('**/*.hs', high = 'FIXME', normal = 'TODO', low = '')
   }
 }
 
