@@ -5,8 +5,7 @@ String githubProject = "BNFC/bnfc"
 
 // Base Job
 // This represents defaults configuration for most of the other jobs
-job {
-  name "$dir/_base-job"
+freeStyleJob("$dir/_base-job") {
   environmentVariables {
     env('PATH', '$HOME/.cabal/bin:$PATH')
   }
@@ -19,8 +18,7 @@ job {
 
 
 /* ~~~ Commit stage ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-sdistJob = job {
-  name "$dir/sdist"
+sdistJob = freeStyleJob("$dir/sdist") {
   using "$dir/_base-job"
   scm {
     git {
@@ -37,8 +35,7 @@ sdistJob = job {
   }
 }
 
-commitBuildJob = job {
-  name "$dir/commit-build"
+commitBuildJob = freeStyleJob("$dir/commit-build") {
   using "$dir/_base-job"
   scm {
     git {
@@ -67,8 +64,7 @@ commitBuildJob = job {
   }
 }
 
-acceptanceTestsJob = job {
-  name "$dir/acceptance-tests"
+acceptanceTestsJob = freeStyleJob("$dir/acceptance-tests") {
   using "$dir/_base-job"
   scm {
     git {
@@ -108,8 +104,7 @@ acceptanceTestsJob = job {
   }
 }
 
-testBuildGht783Job = job {
-  name "$dir/test-build-ghc-7.8.3"
+testBuildGht783Job = freeStyleJob("$dir/test-build-ghc-7.8.3") {
   using "$dir/_base-job"
   steps{
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
@@ -122,8 +117,7 @@ testBuildGht783Job = job {
   }
 }
 
-testBuildGht7101Job = job {
-  name "$dir/test-build-ghc-7.10.1"
+testBuildGht7101Job = freeStyleJob("$dir/test-build-ghc-7.10.1") {
   using "$dir/_base-job"
   steps{
     copyArtifacts("$dir/sdist", "", flattenFiles=true) {
@@ -137,8 +131,7 @@ testBuildGht7101Job = job {
 }
 
 /* ~~~ BINARIES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-bdistMacJob = job {
-  name "$dir/bdist-mac"
+bdistMacJob = freeStyleJob("$dir/bdist-mac") {
   using "$dir/_base-job"
   label "mac"
   steps {
@@ -163,8 +156,7 @@ bdistMacJob = job {
   }
 }
 
-bdistLinux64Job = job {
-  name "$dir/bdist-linux64"
+bdistLinux64Job = freeStyleJob("$dir/bdist-linux64") {
   using "$dir/_base-job"
   environmentVariables {
     env('DESTDIR', 'BNFC-${BNFC_VERSION}-linux64')
@@ -192,8 +184,7 @@ bdistLinux64Job = job {
   }
 }
 
-bdistLinux32Job = job {
-  name "$dir/bdist-linux32"
+bdistLinux32Job = freeStyleJob("$dir/bdist-linux32") {
   using "$dir/_base-job"
   environmentVariables {
     env('DESTDIR', 'BNFC-${BNFC_VERSION}-linux32')
@@ -226,8 +217,7 @@ bdistLinux32Job = job {
   }
 }
 
-bdistWinJob = job {
-  name "$dir/bdist-win"
+bdistWinJob = freeStyleJob("$dir/bdist-win") {
   using "$dir/_base-job"
   label "windows-vm"
   steps {
@@ -253,8 +243,7 @@ bdistWinJob = job {
  * It launch the different jobs in different phases (Commit, QA and binaries)
  * and collect the resulting binaries
  */
-job(type: Multijob) {
-  name "$dir/ci-pipeline"
+multiJob("$dir/ci-pipeline") {
 
   // Where to store the generated artifacts
   String artifactDir = "_artifacts"
