@@ -57,11 +57,13 @@ commitBuildJob = job {
       cabal configure -v --enable-tests
       cabal build
       cabal test
+      cabal sdist
       """
   }
   publishers {
     warnings(['Glasgow Haskell Compiler'])
     tasks('**/*.hs', high = 'FIXME', normal = 'TODO', low = '')
+    archiveArtifacts 'source/dist/BNFC-${BNFC_VERSION}.tar.gz'
   }
 }
 
