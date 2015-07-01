@@ -325,16 +325,16 @@ multiJob("$dir/bnfc-pipeline") {
       buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
     copyArtifacts(bdistMacJob.name,"",artifactDir, flatterFiles = true) {
-      buildNumber('$BDIST_MAC_BUILD_NUMBER')
+      buildNumber('$BNFC_BDIST_MAC_BUILD_NUMBER')
     }
     copyArtifacts(bdistLinux32Job.name,"",artifactDir, flatterFiles = true) {
-      buildNumber('$BDIST_LINUX32_BUILD_NUMBER')
+      buildNumber('$BNFC_BDIST_LINUX32_BUILD_NUMBER')
     }
     copyArtifacts(bdistLinux64Job.name,"",artifactDir, flatterFiles = true) {
-      buildNumber('$BDIST_LINUX64_BUILD_NUMBER')
+      buildNumber('$BNFC_BDIST_LINUX64_BUILD_NUMBER')
     }
     // copyArtifacts(bdistWinJob.name,"",artifactDir, flatterFiles = true) {
-    //   buildNumber('$BDIST_WIN_BUILD_NUMBER')
+    //   buildNumber('$BNFC_BDIST_WIN_BUILD_NUMBER')
     // }
   }
   publishers {
