@@ -18,7 +18,8 @@ freeStyleJob("$dir/_base-job") {
 
 
 /* ~~~ Commit stage ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-commitBuildJob = freeStyleJob("$dir/commit-build") {
+commitBuildJob = freeStyleJob("$dir/bnfc-build") {
+  previousNames "$dir/commit-build"
   using "$dir/_base-job"
   scm {
     git {
