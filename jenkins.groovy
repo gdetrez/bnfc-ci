@@ -134,7 +134,7 @@ testBuildGht7101Job = freeStyleJob("$dir/test-build-ghc-7.10.1") {
 
 testInstallJob = matrixJob("$dir/bnfc-install-tests") {
   axes {
-    text("GHC_VERSION", "7.6.1")
+    text("GHC_VERSION", "7.4.2", "7.6.1", "7.6.2", "7.6.3", "7.8.1", "7.8.3", "7.8.4", "7.10.1")
   }
   environmentVariables {
     env('PATH', '$HOME/.cabal/bin:$PATH')
@@ -151,8 +151,8 @@ testInstallJob = matrixJob("$dir/bnfc-install-tests") {
     }
     shell """
       cabal sandbox init
-      ls
-      env
+      cabal -v install BNFC-*.tar.gz \
+        --with-compiler=/srv/ghc/x86_64/ghc-${GHC_VERSION}/bin/ghc-${GHC_VERSION}
     """
   }
 }
