@@ -89,7 +89,7 @@ acceptanceTestsJob = freeStyleJob("$dir/acceptance-tests") {
   }
 }
 
-testBuildGht7101Job = freeStyleJob("$dir/test-build-ghc-7.10.1") {
+testInstallEnableTestsJob = freeStyleJob("$dir/bnfc-test-install-enable-tests") {
   using "$dir/_base-job"
   steps{
     copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
@@ -97,7 +97,7 @@ testBuildGht7101Job = freeStyleJob("$dir/test-build-ghc-7.10.1") {
     }
     shell("""
       cabal sandbox init
-      cabal -v install --enable-tests --with-compiler=/usr/local/ghc-7.10.1/bin/ghc-7.10.1  BNFC-*.tar.gz
+      cabal -v install --enable-tests BNFC-*.tar.gz
     """)
   }
 }
@@ -167,7 +167,7 @@ bdistLinux64Job = freeStyleJob("$dir/bdist-linux64") {
     }
     shell 'tar xf BNFC-${BNFC_VERSION}.tar.gz --strip-components=1'
     shell '''
-      OPTS=--with-ghc=/opt/haskell/x86_64/ghc-7.8.3/bin/ghc
+      OPTS=--with-ghc=/srv/ghc/x86_64/ghc-7.8.3/bin/ghc
       cabal sandbox init
       cabal ${OPTS} install --only-dependencies
       cabal ${OPTS} configure --prefix=/
