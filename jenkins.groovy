@@ -288,7 +288,7 @@ multiJob("$dir/ci-pipeline") {
         fileParam('version.properties')
         prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
       }
-      job(testBuildGht7101Job.name) {
+      job(testInstallEnableTestsJob.name) {
         fileParam('version.properties')
         prop("COMMIT_BUILD_BUILD_NUMBER", '$COMMIT_BUILD_BUILD_NUMBER')
       }
