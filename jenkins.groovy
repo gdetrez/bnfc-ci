@@ -62,7 +62,7 @@ commitBuildJob = job {
   }
   publishers {
     warnings(['Glasgow Haskell Compiler'])
-    tasks('**/*.hs', high = 'FIXME', normal = 'TODO', low = '')
+    tasks('**/*.hs', '', high = 'FIXME', normal = 'TODO', low = '')
     archiveArtifacts 'source/dist/BNFC-${BNFC_VERSION}.tar.gz'
   }
 }
