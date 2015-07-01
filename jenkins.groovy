@@ -152,7 +152,7 @@ testInstallJob = matrixJob("$dir/bnfc-install-tests") {
     shell """
       cabal sandbox init
       cabal -v install BNFC-*.tar.gz \
-        --with-compiler=/srv/ghc/x86_64/ghc-${GHC_VERSION}/bin/ghc-${GHC_VERSION}
+        --with-compiler=/srv/ghc/x86_64/ghc-\${GHC_VERSION}/bin/ghc-\${GHC_VERSION}
     """
   }
 }
