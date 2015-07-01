@@ -133,7 +133,7 @@ testBuildGht7101Job = freeStyleJob("$dir/test-build-ghc-7.10.1") {
 }
 
 testInstallJob = matrixJob("$dir/bnfc-install-tests") {
-  usinng "$dir/_base-job"
+  using "$dir/_base-job"
   axes {
     text("GHC_VERSION", "7.6.1")
   }
