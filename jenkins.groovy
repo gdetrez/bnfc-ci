@@ -158,6 +158,44 @@ bdistMacJob = freeStyleJob("$dir/bnfc-bdist-mac") {
   }
 }
 
+bdistLinuxJob = matrixJob("$dir/bnfc-bdist-linux") {
+  axes {
+    text("BDIST_ARCH", "linux32", "linux64")
+  }
+  environmentVariables {
+    env('PATH', '$HOME/.cabal/bin:$PATH')
+    env('DEST', 'BNFC-${BNFC_VERSION}-${BDIST_ARCH}')
+  }
+  wrappers { preBuildCleanup {} }
+  parameters {
+    stringParam("BNFC_VERSION")
+    stringParam("BNFC_BUILD_BUILD_NUMBER")
+  }
+  steps {
+    copyArtifacts(commitBuildJob.name, '', true) {
+      buildNumber('$BNFC_BUILD_BUILD_NUMBER')
+    }
+    shell 'tar xf BNFC-${BNFC_VERSION}.tar.gz --strip-components=1'
+    shell 'cabal sandbox init'
+    shell '''
+      if [ "$BDIST_ARCH" = "linux32" ]
+      then
+        OPTS=--with-ghc=/opt/haskell/i386/ghc-7.8.3/bin/ghc
+        OPTS+=" --ghc-option=-optc-m32"
+        OPTS+=" --ghc-option=-opta-m32"
+        OPTS+=" --ghc-option=-optl-m32"
+        OPTS+=" --ld-option=-melf_i386"
+      else
+        OPTS=""
+      fi
+      make bdist BDIST_TAG=${DEST} CABAL_OPTS=${OPTS}
+    '''
+  }
+  publishers {
+    archiveArtifacts 'dist/${DEST}.tar.gz'
+  }
+}
+
 bdistLinux64Job = freeStyleJob("$dir/bnfc-bdist-linux64") {
   previousNames "$dir/bdist-linux64"
   using "$dir/_base-job"
