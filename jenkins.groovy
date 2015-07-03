@@ -351,6 +351,6 @@ multiJob("$dir/bnfc-pipeline") {
     // }
   }
   publishers {
-    archiveArtifacts "$artifactDir/*"
+    archiveArtifacts "$artifactDir/**/*"
   }
 }
