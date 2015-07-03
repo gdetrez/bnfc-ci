@@ -162,7 +162,7 @@ bdistLinux64Job = freeStyleJob("$dir/bnfc-bdist-linux64") {
   previousNames "$dir/bdist-linux64"
   using "$dir/_base-job"
   environmentVariables {
-    env('DESTDIR', 'BNFC-${BNFC_VERSION}-linux64')
+    env('DEST', 'BNFC-${BNFC_VERSION}-linux64')
     env('PATH', '$HOME/.cabal/bin:$PATH')
   }
   steps {
@@ -170,21 +170,11 @@ bdistLinux64Job = freeStyleJob("$dir/bnfc-bdist-linux64") {
       buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
     shell 'tar xf BNFC-${BNFC_VERSION}.tar.gz --strip-components=1'
-    shell '''
-      OPTS=--with-ghc=/srv/ghc/x86_64/ghc-7.8.3/bin/ghc
-      cabal sandbox init
-      cabal ${OPTS} install --only-dependencies
-      cabal ${OPTS} configure --prefix=/
-      cabal ${OPTS} build
-      cabal copy --destdir=dist/install
-      mkdir ${DESTDIR}
-      cp dist/install/bin/bnfc ${DESTDIR}
-      cp LICENSE ${DESTDIR}
-    '''
-    shell 'tar -cvz ${DESTDIR} > ${DESTDIR}.tar.gz'
+    shell 'cabal sandbox init'
+    shell 'make bdist BDIST_TAG=${DEST}'
   }
   publishers {
-    archiveArtifacts '${DESTDIR}.tar.gz'
+    archiveArtifacts 'dist/${DEST}.tar.gz'
   }
 }
 
@@ -192,7 +182,7 @@ bdistLinux32Job = freeStyleJob("$dir/bnfc-bdist-linux32") {
   previousNames "$dir/bdist-linux32"
   using "$dir/_base-job"
   environmentVariables {
-    env('DESTDIR', 'BNFC-${BNFC_VERSION}-linux32')
+    env('DEST', 'BNFC-${BNFC_VERSION}-linux32')
     env('PATH', '$HOME/.cabal/bin:$PATH')
   }
   steps {
@@ -200,26 +190,18 @@ bdistLinux32Job = freeStyleJob("$dir/bnfc-bdist-linux32") {
       buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
     shell "tar xf BNFC-\${BNFC_VERSION}.tar.gz --strip-components=1"
+    shell 'cabal sandbox init'
     shell '''
       OPTS=--with-ghc=/opt/haskell/i386/ghc-7.8.3/bin/ghc
       OPTS+=" --ghc-option=-optc-m32"
       OPTS+=" --ghc-option=-opta-m32"
       OPTS+=" --ghc-option=-optl-m32"
       OPTS+=" --ld-option=-melf_i386"
-
-      cabal sandbox init
-      cabal ${OPTS} install --only-dependencies
-      cabal ${OPTS} configure --prefix=/
-      cabal ${OPTS} build
-      cabal copy --destdir=dist/install
-      mkdir ${DESTDIR}
-      cp dist/install/bin/bnfc ${DESTDIR}
-      cp LICENSE ${DESTDIR}
+      make bdist BDIST_TAG=${DEST} CABAL_OPTS=${OPTS}
     '''
-    shell 'tar -cvz ${DESTDIR} > ${DESTDIR}.tar.gz'
   }
   publishers {
-    archiveArtifacts '${DESTDIR}.tar.gz'
+    archiveArtifacts 'dist/${DEST}.tar.gz'
   }
 }
 
