@@ -328,11 +328,7 @@ multiJob("$dir/bnfc-pipeline") {
         fileParam('version.properties')
         prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
       }
-      job(bdistLinux32Job.name) {
-        fileParam('version.properties')
-        prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
-      }
-      job(bdistLinux64Job.name) {
+      job(bdistLinuxJob.name) {
         fileParam('version.properties')
         prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
       }
@@ -344,16 +340,13 @@ multiJob("$dir/bnfc-pipeline") {
     copyArtifacts(commitBuildJob.name, "", artifactDir, flattenFiles=true) {
       buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
-    copyArtifacts(bdistMacJob.name,"",artifactDir, flatterFiles = true) {
+    copyArtifacts(bdistMacJob.name,"",artifactDir, flattenFiles = true) {
       buildNumber('$BNFC_BDIST_MAC_BUILD_NUMBER')
     }
-    copyArtifacts(bdistLinux32Job.name,"",artifactDir, flatterFiles = true) {
-      buildNumber('$BNFC_BDIST_LINUX32_BUILD_NUMBER')
+    copyArtifacts(bdistLinux32Job.name,"",artifactDir, flattenFiles = true) {
+      buildNumber('$BNFC_BDIST_LINUX_BUILD_NUMBER')
     }
-    copyArtifacts(bdistLinux64Job.name,"",artifactDir, flatterFiles = true) {
-      buildNumber('$BNFC_BDIST_LINUX64_BUILD_NUMBER')
-    }
-    // copyArtifacts(bdistWinJob.name,"",artifactDir, flatterFiles = true) {
+    // copyArtifacts(bdistWinJob.name,"",artifactDir, flattenFiles = true) {
     //   buildNumber('$BNFC_BDIST_WIN_BUILD_NUMBER')
     // }
   }
