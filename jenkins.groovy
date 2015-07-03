@@ -188,7 +188,7 @@ bdistLinuxJob = matrixJob("$dir/bnfc-bdist-linux") {
       else
         OPTS=""
       fi
-      make bdist BDIST_TAG=${DEST} CABAL_OPTS=${OPTS}
+      make bdist BDIST_TAG=${DEST} CABAL_OPTS="${OPTS}"
     '''
   }
   publishers {
