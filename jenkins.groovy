@@ -343,7 +343,7 @@ multiJob("$dir/bnfc-pipeline") {
     copyArtifacts(bdistMacJob.name,"",artifactDir, flattenFiles = true) {
       buildNumber('$BNFC_BDIST_MAC_BUILD_NUMBER')
     }
-    copyArtifacts(bdistLinux32Job.name,"",artifactDir, flattenFiles = true) {
+    copyArtifacts(bdistLinuxJob.name,"",artifactDir, flattenFiles = true) {
       buildNumber('$BNFC_BDIST_LINUX_BUILD_NUMBER')
     }
     // copyArtifacts(bdistWinJob.name,"",artifactDir, flattenFiles = true) {
