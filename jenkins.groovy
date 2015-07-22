@@ -92,6 +92,9 @@ acceptanceTestsJob = freeStyleJob("$dir/bnfc-system-tests") {
 }
 
 testInstallEnableTestsJob = freeStyleJob("$dir/bnfc-test-install-enable-tests") {
+  description "Try a <code>cabal install</code> of the source package with " +
+              "<code>--enable-tests</code>. This makes sure that all the " +
+              "test files are included in the distribution."
   using "$dir/_base-job"
   steps{
     copyArtifacts(commitBuildJob.name, "", flattenFiles=true) {
