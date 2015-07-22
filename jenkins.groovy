@@ -340,9 +340,9 @@ multiJob("$dir/bnfc-pipeline") {
     copyArtifacts(commitBuildJob.name, "", artifactDir, flattenFiles=true) {
       buildNumber('$BNFC_BUILD_BUILD_NUMBER')
     }
-    copyArtifacts(bdistMacJob.name,"",artifactDir, flattenFiles = true) {
-      buildNumber('$BNFC_BDIST_MAC_BUILD_NUMBER')
-    }
+    // copyArtifacts(bdistMacJob.name,"",artifactDir, flattenFiles = true) {
+    //   buildNumber('$BNFC_BDIST_MAC_BUILD_NUMBER')
+    // }
     copyArtifacts(bdistLinuxJob.name,"",artifactDir, flattenFiles = true) {
       buildNumber('$BNFC_BDIST_LINUX_BUILD_NUMBER')
     }
