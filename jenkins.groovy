@@ -64,14 +64,7 @@ acceptanceTestsJob = freeStyleJob("$dir/bnfc-system-tests") {
     }
     shell """
       cd testing
-      export CLASSPATH=.:\$(pwd)/data/javatools.jar
-
-      # Setup sandbox
-      cabal sandbox init
-      cabal install --only-dependencies \
-        --constraint="HTF==0.11.*" \
-        --constraint='aeson==0.7.0.4' \
-        --constraint='haskell-src-exts==1.15.*'
+      ./scripts/bootstrap
       cabal install BNFC-\${BNFC_VERSION}.tar.gz
 
       # Compile test suite
