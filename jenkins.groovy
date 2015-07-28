@@ -320,9 +320,9 @@ multiJob("$dir/bnfc-pipeline") {
         fileParam('version.properties')
         prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
       }
-      job(testInstallEnableTestsJob.name) {
-        fileParam('version.properties')
-        prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
+      //job(testInstallEnableTestsJob.name) {
+      //  fileParam('version.properties')
+      //  prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
       }
     }
     phase() {
