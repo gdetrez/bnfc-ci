@@ -109,7 +109,7 @@ testInstallEnableTestsJob = freeStyleJob("$dir/bnfc-test-install-enable-tests") 
 
 testInstallJob = matrixJob("$dir/bnfc-install-tests") {
   axes {
-    text("GHC_VERSION", "7.4.1", "7.4.2", "7.6.1", "7.6.2", "7.6.3", "7.8.1", "7.8.3", "7.8.4", "7.10.1")
+    text("GHC_VERSION", "7.8.1", "7.8.2", "7.8.3", "7.8.4", "7.10.1")
   }
   environmentVariables {
     env('PATH', '$HOME/.cabal/bin:$PATH')
