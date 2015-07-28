@@ -323,7 +323,7 @@ multiJob("$dir/bnfc-pipeline") {
       //job(testInstallEnableTestsJob.name) {
       //  fileParam('version.properties')
       //  prop("BNFC_BUILD_BUILD_NUMBER", '$BNFC_BUILD_BUILD_NUMBER')
-      }
+      //}
     }
     phase() {
       phaseName 'Binaries'
