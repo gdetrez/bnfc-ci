@@ -59,26 +59,14 @@ acceptanceTestsJob = freeStyleJob("$dir/bnfc-system-tests") {
     }
   }
   steps {
-    copyArtifacts(commitBuildJob.name, "", "testing/", flattenFiles=true) {
-      buildNumber('$BNFC_BUILD_BUILD_NUMBER')
-    }
     shell """
       cd testing
       ./scripts/bootstrap
-      cabal install BNFC-\${BNFC_VERSION}.tar.gz
-
-      # Compile test suite
-      cabal configure
-      cabal build
-
-      # Run tests
-      set +e
-      cabal exec cabal -- run -- --xml=bnfc-system-tests.xml -j2
-      exit 0
+      ./scripts/runtests || true    # Failed tests mark the build as unstable
     """
   }
   publishers {
-    archiveJunit('testing/bnfc-system-tests.xml') {
+    archiveJunit('testing/dist/test/bnfc-system-tests.xml') {
       retainLongStdout true
     }
   }
