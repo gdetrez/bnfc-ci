@@ -164,13 +164,13 @@ bdistLinuxJob = matrixJob("$dir/bnfc-bdist-linux") {
     shell '''
       if [ "$BDIST_ARCH" = "linux32" ]
       then
-        OPTS=--with-ghc=/opt/haskell/i386/ghc-7.8.3/bin/ghc
+        OPTS=--with-ghc=/opt/ghc/x86/ghc-7.10.1/bin/ghc
         OPTS+=" --ghc-option=-optc-m32"
         OPTS+=" --ghc-option=-opta-m32"
         OPTS+=" --ghc-option=-optl-m32"
         OPTS+=" --ld-option=-melf_i386"
       else
-        OPTS=""
+        OPTS=--with-ghc=/opt/ghc/x86_64/ghc-7.10.1/bin/ghc
       fi
       make bdist BDIST_TAG=${DEST} CABAL_OPTS="${OPTS}"
     '''
